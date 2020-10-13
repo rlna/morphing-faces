@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+		<link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<header>
+			<div class="content">
+				<h2>CS 194</h2>
+			</div>
+		</header>
+
+		<div id="image-banner"></div>
+
+		<div class="content">
+			<section id="post">
+				<h1>Project 3: Morphing Faces</h1>
+				<h3>Fall 2020</h3>
+				<h2>Overview</h2>
+				<p>
+					In this project I produced a 'morph' animation of faces, computed the mean of a population of faces, and extrapolated from a population mean to create a caricature. To warp images, I explored how to utilize triangulation and interpolation. To create caricatures, I learned how to parse through large datasets to create an averge image.
+				</p>
+
+				</section>
+				<h2 >Defining Correspondences</h2>
+				<p>
+					To morph faces, I first needed to define the key points of the images. I used ginput to pick 44 points as shown below. I then added on the corners of the image for a total of 48 points.
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/sketch.jpg" height="400px" />
+								<figcaption align="middle">Points.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/1/Figure_1.png" height="400px" />
+								<figcaption align="middle">George points.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/1/Figure_2.png" height="400px" />
+								<figcaption align="middle">Emma points.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<h2>Computing the "Mid-Way Face"</h2>
+				<p>
+					Once I defined points for two images, following the image above, I calculated the average pointset between the two. Using the average pointset, I found a triangulation using the Delaunay algorithm. I then applied the triangulation to the first image, second image, and average pointsets.
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/1/tri_1.png" height="400px" />
+								<figcaption align="middle">George triangulation.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/1/tri_2.png" height="400px" />
+								<figcaption align="middle">Emma triangulation.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<p>
+					To calculate the 'mid-way face', I warped both the images to the average point set. I did this by computing the affine transformation from each triangle of the average triangulation to the corresponding triangle of the image's triangulation, and applying it to move the image. After warping both images to the average pointset, I overlayed them and averaged their colors together.
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/intermed/out1.jpg" height="300px" />
+								<figcaption align="middle">George warped to avg.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/intermed/out3.jpg" height="300px" />
+								<figcaption align="middle">Images overlayed.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/intermed/out2.jpg" height="300px" />
+								<figcaption align="middle">Emma warped to avg.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<h2>The Morph Sequence</h2>
+				<p>
+					To produce the morph sequence, I followed the process in the previous section, but introduced two new variables: warp_frac and dissolve_frac. In each frame, the variables were incremented. They helped me interpolate point value and color values between frames to create a smooth transition overall.
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/eg.gif" height="400px" />
+								<figcaption align="middle">Morph sequence!.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<h2>The "Mean Face" of a Population</h2>
+				<p>
+					I used a dataset of faces found <a href="https://fei.edu.br/~cet/facedatabase.html"> here </a>. I found the average of all smiling faces and their corresponding points. Then, I found a triangulation for the average points. I warped all faces to the average points and overlayed them on top of each other, averaging their colors to get a final output.
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/2/face.jpg" height="400px" />
+								<figcaption align="middle">Average face.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/2/face.png" height="400px" />
+								<figcaption align="middle">Average triangulation.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<p> Here are some before and after images of individual faces warped to the average position.
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/2/0b.jpg" height="300px" />
+								<figcaption align="middle">Original image 0.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/2/1b.jpg" height="300px" />
+								<figcaption align="middle">Original image 0.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/2/2b.jpg" height="300px" />
+								<figcaption align="middle">Original image 0.</figcaption>
+							</td>
+						</tr>
+						<tr>
+							<td align="middle">
+								<img src="images/2/0face.jpg" height="300px" />
+								<figcaption align="middle">Warped image 0.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/2/1face.jpg" height="300px" />
+								<figcaption align="middle">Warped image 1.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/2/2face.jpg" height="300px" />
+								<figcaption align="middle">Warped image 2.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<p>
+					Using the average point set, I created a warp for my own face to the smiling average. I also warped the smiling average to my frowning face.
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/2/me.jpg" height="200px" />
+								<figcaption align="middle">Original face.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/2/smile2me.jpg" height="200px" />
+								<figcaption align="middle">Average face warped to me.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/2/me2smile.jpg" height="200px" />
+								<figcaption align="middle">Warped to average face.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/2/face.jpg" height="200px" />
+								<figcaption align="middle">Average face.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<h2>Caricatures: Turn that Frown Upside Down!</h2>
+				<p> Using the average smiling face calculated before, I created a caricature of myself by warping my frowning face into a smile. Don't I look way better now?
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/3/0.2cc.jpg" height="200px" />
+								<figcaption align="middle">Alpha = .2.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/3/0.5cc.jpg" height="200px" />
+								<figcaption align="middle">Alpha = .5.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/3/0.8cc.jpg" height="200px" />
+								<figcaption align="middle">Alpha = .8.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<p>
+					I also made my face frown more.
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/3/02cc.jpg" height="200px" />
+								<figcaption align="middle">Alpha = .2.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/3/05cc.jpg" height="200px" />
+								<figcaption align="middle">Alpha = .5.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/3/08cc.jpg" height="200px" />
+								<figcaption align="middle">Alpha = .8.</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<h2>Bells & Whistles</h2>
+				<p>
+					I participated in a class morph. Here is my part morphing to Saurav. Link to full vid <a href="https://tinyurl.com/194-26-classvid">here</a>!
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/class.gif" height="400px" />
+							</td>
+						</tr>
+					</table>
+				</div>
+				<h3> Average White Men </h3>
+				<p>
+					I used the faces of average white men to see what I would look like as different white men. I also saw what an average white man would look like if he looked a bit more like me.
+				</p>
+				<div align="center">
+					<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/4/averageenglishman.jpg" height="300px" />
+								<figcaption align="middle">Average English man.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/averageirishmale.jpg" height="300px" />
+								<figcaption align="middle">Average Irish man.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/averagefrenchmale.jpg" height="300px" />
+								<figcaption align="middle">Average French man.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/avg.jpg" height="300px" />
+								<figcaption align="middle">Me!</figcaption>
+							</td>
+						</tr>
+				</table>
+			</div>
+			<p>
+				Now watch me turn into them!
+			</p>
+			<div align="center">
+				<table style="width=100%" >
+						<tr>
+							<td align="middle">
+								<img src="images/4/averageenglishman.jpg" height="300px" />
+								<figcaption align="middle">Average English man.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/english1.jpg" height="300px" />
+								<figcaption align="middle">English man as me.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/english3.jpg" height="300px" />
+								<figcaption align="middle">Blended.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/english.jpg" height="300px" />
+								<figcaption align="middle">Me as an English man</figcaption>
+							</td>
+						</tr>
+						<tr>
+							<td align="middle">
+								<img src="images/4/averageirishmale.jpg" height="300px" />
+								<figcaption align="middle">Average Irish man.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/irish1.jpg" height="300px" />
+								<figcaption align="middle">Irish man as me.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/irish3.jpg" height="300px" />
+								<figcaption align="middle">Blended.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/irish2.jpg" height="300px" />
+								<figcaption align="middle">Me as an Irish man</figcaption>
+							</td>
+						</tr>
+						<tr>
+							<td align="middle">
+								<img src="images/4/averagefrenchmale.jpg" height="300px" />
+								<figcaption align="middle">Average French man.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/french1.jpg" height="300px" />
+								<figcaption align="middle">French man as me.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/french3.jpg" height="300px" />
+								<figcaption align="middle">Blended.</figcaption>
+							</td>
+							<td align="middle">
+								<img src="images/4/french.jpg" height="300px" />
+								<figcaption align="middle">Me as an French man</figcaption>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+		</div>
+
+	</body>
+</html>
